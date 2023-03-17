@@ -56,8 +56,8 @@ async function callUpdateStatus(req: Request, res: Response) {
 
 		// let decoded: any = jwt.verify(token.substring(1), secret)
 		let decoded: any = jwt.verify(token, secret)
-		const userId = decoded.userId
-		if (await updateStatus(userId)) {
+		const customerId = decoded.customerId
+		if (await updateStatus(customerId)) {
 			return res.status(200).json({
 				status: 'success',
 				message: 'Verify email success',
@@ -70,11 +70,11 @@ async function callUpdateStatus(req: Request, res: Response) {
 	}
 }
 
-async function updateStatus(userId: string): Promise<boolean> {
+async function updateStatus(customerId: string): Promise<boolean> {
 	try {
 		await prisma.customer.update({
 			where: {
-				id: userId,
+				id: customerId,
 			},
 			data: {
 				status: 'Verified',

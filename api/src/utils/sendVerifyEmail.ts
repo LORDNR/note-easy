@@ -5,14 +5,14 @@ import Mailgen from 'mailgen'
 
 async function sendVerifyEmail(
 	email: string,
-	userId: string,
+	customerId: string,
 	linkPart: string,
 	instructions: string,
 	tokenExp: string = '30d',
 ) {
 	const token = jwt.sign(
 		{
-			userId: userId,
+			customerId: customerId,
 		},
 		config.environments.SECRET,
 		{ expiresIn: tokenExp },
