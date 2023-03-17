@@ -6,6 +6,7 @@ import { prisma, reqValidation } from '../utils'
 import { SuccessResponse, ErrorResponse } from '../types/response'
 import sendVerifyEmail from '../utils/sendVerifyEmail'
 import config from '../config'
+import { Customer } from '@prisma/client'
 
 async function register(req: Request, res: Response) {
 	try {
@@ -13,7 +14,7 @@ async function register(req: Request, res: Response) {
 
 		const { email, password, firstname, lastname } = req.body
 
-		const customer = await prisma.customer.create({
+		const customer: Customer | null = await prisma.customer.create({
 			data: {
 				email,
 				password: bcryptjs.hashSync(password, await bcryptjs.genSalt(10)),
@@ -40,6 +41,66 @@ async function register(req: Request, res: Response) {
 			throw 'Email already exists.'
 		}
 
+		return res
+			.status(400)
+			.json({ status: 'error', message: error } as ErrorResponse)
+	}
+}
+
+async function login(req: Request, res: Response) {
+	try {
+		reqValidation(req)
+
+		const { email } = req.body
+
+		const customer: Customer | null = await prisma.customer.findUnique({
+			where: {
+				email,
+			},
+		})
+
+		if (!customer) {
+			throw 'Invalid email or password'
+		}
+
+		const validated = await bcryptjs.compare(
+			req.body.password,
+			customer.password,
+		)
+
+		if (!validated) {
+			throw 'Invalid email or password'
+		}
+
+		if (customer.status === 'Unverified') {
+			await sendVerifyEmail(
+				email,
+				customer.id,
+				'call-update-status',
+				'To get started with Verify Email, please click here:',
+				'24h',
+			)
+			return res.status(200).json({
+				status: 'success',
+				message: 'Please Verify your email',
+			} as SuccessResponse)
+		}
+		const token = jwt.sign(
+			{
+				id: customer.id,
+				email: customer.email,
+			},
+			config.environments.SECRET,
+			{},
+		)
+
+		return res.status(200).json({
+			status: 'success',
+			data: {
+				token,
+			},
+		} as SuccessResponse)
+	} catch (error) {
 		return res
 			.status(400)
 			.json({ status: 'error', message: error } as ErrorResponse)
@@ -88,4 +149,4 @@ async function updateStatus(customerId: string): Promise<boolean> {
 	}
 }
 
-export default { register, callUpdateStatus }
+export default { register, login, callUpdateStatus }
