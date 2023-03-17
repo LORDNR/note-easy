@@ -47,7 +47,7 @@ async function findById(req: Request, res: Response) {
 
 		const { id } = req.params
 
-		const category = await prisma.categoryNote.findUnique({
+		const category = await prisma.categoryNote.findUniqueOrThrow({
 			where: {
 				id,
 			},

@@ -12,9 +12,9 @@ import {
 const categoryRouter = Router()
 
 categoryRouter
+	.post('/', checkSchema(AddCategoryRequest), categoryController.create)
 	.get('/', categoryController.find)
 	.get('/:id', checkSchema(GetCategoryByIdRequest), categoryController.findById)
-	.post('/', checkSchema(AddCategoryRequest), categoryController.create)
 	.put('/:id', checkSchema(UpdateCategoryRequest), categoryController.update)
 	.delete('/:id', checkSchema(RemoveCategoryRequest), categoryController.remove)
 
