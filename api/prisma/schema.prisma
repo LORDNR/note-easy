@@ -12,7 +12,7 @@ datasource db {
 
 model Note {
   id             String        @id @default(uuid())
-  note           String
+  note           String        @db.Text
   customerId     String        @default(uuid()) @map("customer_id")
   categoryNoteId String        @default(uuid()) @map("category_note_id")
   createdAt      DateTime      @default(now())
