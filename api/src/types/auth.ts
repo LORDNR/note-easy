@@ -1,6 +1,6 @@
 import { Schema } from 'express-validator'
 
-const RegisterSchema: Schema = {
+const RegisterRequest: Schema = {
 	email: {
 		isEmail: true,
 		in: 'body',
@@ -27,7 +27,7 @@ const RegisterSchema: Schema = {
 	},
 }
 
-const LoginSchema: Schema = {
+const LoginRequest: Schema = {
 	email: {
 		isEmail: true,
 		in: 'body',
@@ -44,4 +44,4 @@ const LoginSchema: Schema = {
 	},
 }
 
-export { RegisterSchema, LoginSchema }
+export { RegisterRequest, LoginRequest }
