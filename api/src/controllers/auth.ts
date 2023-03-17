@@ -26,9 +26,8 @@ async function register(req: Request, res: Response) {
 		await sendVerifyEmail(
 			email,
 			customer.id,
-			'call-update-status',
 			'To get started with Verify Email, please click here:',
-			'24h',
+			'24h'
 		)
 
 		return res.status(201).json({
@@ -76,7 +75,6 @@ async function login(req: Request, res: Response) {
 			await sendVerifyEmail(
 				email,
 				customer.id,
-				'call-update-status',
 				'To get started with Verify Email, please click here:',
 				'24h',
 			)

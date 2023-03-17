@@ -6,7 +6,6 @@ import Mailgen from 'mailgen'
 async function sendVerifyEmail(
 	email: string,
 	customerId: string,
-	linkPart: string,
 	instructions: string,
 	tokenExp: string = '30d',
 ) {
@@ -21,7 +20,8 @@ async function sendVerifyEmail(
 	const text = 'Verify Email'
 	const subject = 'Verify your Email'
 	// const link = `${config.environments.URL_WEB}${linkPart}?token=${token}`;
-	const link = `${config.environments.URL_WEB}${linkPart}/${token}`
+	const link = `${config.environments.URL_WEB}?token=${token}`
+
 
 	try {
 		let transporter = nodemailer.createTransport({
