@@ -22,6 +22,15 @@ async function create(req: Request, res: Response) {
 						id: categoryId,
 					},
 				},
+				HistoryNote: {
+					create: {
+						customer: {
+							connect: {
+								id: customerId,
+							},
+						},
+					},
+				},
 			},
 		})
 
