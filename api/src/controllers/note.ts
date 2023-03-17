@@ -111,6 +111,39 @@ async function findById(req: Request, res: Response) {
 			.json({ status: 'error', message: error } as ErrorResponse)
 	}
 }
+async function findByCustomer(req: Request, res: Response) {
+	try {
+		reqValidation(req)
+
+		const { id } = req.params
+
+		const note = await prisma.note.findMany({
+			where: {
+				customerId: id
+			},
+			select: {
+				id: true,
+				note: true,
+				categoryNote: {
+					select: {
+						name: true,
+					},
+				},
+				createdAt: true,
+				updatedAt: true
+			},
+		})
+
+		return res.status(200).json({
+			status: 'success',
+			data: note,
+		} as SuccessResponse)
+	} catch (error: any) {
+		return res
+			.status(400)
+			.json({ status: 'error', message: error } as ErrorResponse)
+	}
+}
 
 async function update(req: Request, res: Response) {
 	try {
@@ -164,4 +197,4 @@ async function remove(req: Request, res: Response) {
 	}
 }
 
-export default { create, find, findById, update, remove }
+export default { create, find, findById, findByCustomer, update, remove }

@@ -25,6 +25,13 @@ const GetNoteByIdRequest: Schema = {
 		errorMessage: 'id must be UUID',
 	},
 }
+const GetNoteByCustomerRequest: Schema = {
+	id: {
+		isUUID: true,
+		in: 'params',
+		errorMessage: 'id must be UUID',
+	},
+}
 
 const UpdateNoteRequest: Schema = {
 	id: {
@@ -55,6 +62,7 @@ const RemoveNoteRequest: Schema = {
 export {
 	AddNoteRequest,
 	GetNoteByIdRequest,
+	GetNoteByCustomerRequest,
 	UpdateNoteRequest,
 	RemoveNoteRequest,
 }
