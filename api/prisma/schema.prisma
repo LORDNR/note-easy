@@ -13,7 +13,8 @@ datasource db {
 model Note {
   id             String        @id @default(uuid())
   title          String        @db.VarChar(255)
-  note           String        @db.Text
+  description    String        @db.Text
+  tags           String[]
   customerId     String        @default(uuid()) @map("customer_id")
   categoryNoteId String        @default(uuid()) @map("category_note_id")
   createdAt      DateTime      @default(now())

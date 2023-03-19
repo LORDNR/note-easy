@@ -7,12 +7,13 @@ async function create(req: Request, res: Response) {
 	try {
 		reqValidation(req)
 
-		const { title, noteMessage, customerId, categoryId } = req.body
+		const { title, description, customerId, categoryId, tags } = req.body
 
 		const noteData = await prisma.note.create({
 			data: {
 				title,
-				note: noteMessage,
+				description,
+				tags,
 				customer: {
 					connect: {
 						id: customerId,
@@ -52,7 +53,8 @@ async function find(req: Request, res: Response) {
 			select: {
 				id: true,
 				title: true,
-				note: true,
+				description: true,
+				tags: true,
 				customer: {
 					select: {
 						email: true,
@@ -95,7 +97,7 @@ async function findById(req: Request, res: Response) {
 			select: {
 				id: true,
 				title: true,
-				note: true,
+				description: true,
 				customer: {
 					select: {
 						email: true,
@@ -132,7 +134,7 @@ async function findByCustomer(req: Request, res: Response) {
 			select: {
 				id: true,
 				title: true,
-				note: true,
+				description: true,
 				categoryNote: {
 					select: {
 						name: true,
@@ -159,7 +161,7 @@ async function update(req: Request, res: Response) {
 		reqValidation(req)
 
 		const { id } = req.params
-		const { title, noteMessage, categoryId } = req.body
+		const { title, description, categoryId } = req.body
 
 		await prisma.note.update({
 			where: {
@@ -167,7 +169,7 @@ async function update(req: Request, res: Response) {
 			},
 			data: {
 				title,
-				note: noteMessage,
+				description,
 				categoryNote: {
 					connect: {
 						id: categoryId,
