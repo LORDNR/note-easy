@@ -39,6 +39,11 @@ const UpdateNoteRequest: Schema = {
 		in: 'params',
 		errorMessage: 'id must be UUID',
 	},
+	title: {
+		isString: true,
+		in: 'body',
+		errorMessage: 'title must be string',
+	},
 	noteMessage: {
 		isString: true,
 		in: 'body',
