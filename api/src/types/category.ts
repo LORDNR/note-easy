@@ -8,6 +8,14 @@ const AddCategoryRequest: Schema = {
 	},
 }
 
+const GetCategoryByNameRequest: Schema = {
+	name: {
+		isString: true,
+		in: 'query',
+		errorMessage: 'name must be string',
+	},
+}
+
 const GetCategoryByIdRequest: Schema = {
 	id: {
 		isUUID: true,
@@ -39,6 +47,7 @@ const RemoveCategoryRequest: Schema = {
 
 export {
 	AddCategoryRequest,
+	GetCategoryByNameRequest,
 	GetCategoryByIdRequest,
 	UpdateCategoryRequest,
 	RemoveCategoryRequest,
