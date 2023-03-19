@@ -27,7 +27,7 @@ async function register(req: Request, res: Response) {
 			email,
 			customer.id,
 			'To get started with Verify Email, please click here:',
-			'24h'
+			'24h',
 		)
 
 		return res.status(201).json({
