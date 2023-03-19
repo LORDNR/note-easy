@@ -22,7 +22,6 @@ async function sendVerifyEmail(
 	// const link = `${config.environments.URL_WEB}${linkPart}?token=${token}`;
 	const link = `${config.environments.URL_WEB}?token=${token}`
 
-
 	try {
 		let transporter = nodemailer.createTransport({
 			service: 'gmail',
