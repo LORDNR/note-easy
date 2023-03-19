@@ -7,10 +7,11 @@ async function create(req: Request, res: Response) {
 	try {
 		reqValidation(req)
 
-		const { noteMessage, customerId, categoryId } = req.body
+		const { title, noteMessage, customerId, categoryId } = req.body
 
 		const noteData = await prisma.note.create({
 			data: {
+				title,
 				note: noteMessage,
 				customer: {
 					connect: {
@@ -50,6 +51,7 @@ async function find(req: Request, res: Response) {
 		const notes = await prisma.note.findMany({
 			select: {
 				id: true,
+				title: true,
 				note: true,
 				customer: {
 					select: {
@@ -87,6 +89,7 @@ async function findById(req: Request, res: Response) {
 			},
 			select: {
 				id: true,
+				title: true,
 				note: true,
 				customer: {
 					select: {
@@ -123,6 +126,7 @@ async function findByCustomer(req: Request, res: Response) {
 			},
 			select: {
 				id: true,
+				title: true,
 				note: true,
 				categoryNote: {
 					select: {
@@ -150,13 +154,14 @@ async function update(req: Request, res: Response) {
 		reqValidation(req)
 
 		const { id } = req.params
-		const { noteMessage, categoryId } = req.body
+		const { title, noteMessage, categoryId } = req.body
 
 		await prisma.note.update({
 			where: {
 				id,
 			},
 			data: {
+				title,
 				note: noteMessage,
 				categoryNote: {
 					connect: {

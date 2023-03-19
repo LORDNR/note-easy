@@ -12,6 +12,7 @@ datasource db {
 
 model Note {
   id             String        @id @default(uuid())
+  title          String        @db.VarChar(255)
   note           String        @db.Text
   customerId     String        @default(uuid()) @map("customer_id")
   categoryNoteId String        @default(uuid()) @map("category_note_id")
