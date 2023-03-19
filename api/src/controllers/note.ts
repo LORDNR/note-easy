@@ -63,6 +63,11 @@ async function find(req: Request, res: Response) {
 						name: true,
 					},
 				},
+				createdAt: true,
+				updatedAt: true,
+			},
+			orderBy: {
+				updatedAt: 'desc',
 			},
 		})
 
@@ -122,7 +127,7 @@ async function findByCustomer(req: Request, res: Response) {
 
 		const note = await prisma.note.findMany({
 			where: {
-				customerId: id
+				customerId: id,
 			},
 			select: {
 				id: true,
@@ -134,7 +139,7 @@ async function findByCustomer(req: Request, res: Response) {
 					},
 				},
 				createdAt: true,
-				updatedAt: true
+				updatedAt: true,
 			},
 		})
 
@@ -187,6 +192,12 @@ async function remove(req: Request, res: Response) {
 		reqValidation(req)
 
 		const { id } = req.params
+
+		await prisma.historyNote.deleteMany({
+			where: {
+				noteId: id,
+			},
+		})
 
 		await prisma.note.delete({
 			where: {
