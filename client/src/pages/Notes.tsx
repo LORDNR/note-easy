@@ -112,7 +112,11 @@ export default function Notes() {
 				categoryId: categoryId.data.data[0].id,
 			})
 			NotesData()
-			handleAdd()
+			setTitle('')
+			setCategory('')
+			setDescription('')
+			setCheckEditOrAdd(true)
+			// handleAdd()
 		} catch (error) {
 			console.log(error)
 		}
@@ -286,7 +290,7 @@ export default function Notes() {
 												marginLeft: 2,
 												fontSize: 36,
 											}}
-											// sx={{}}
+										// sx={{}}
 										/>
 
 										<br />
