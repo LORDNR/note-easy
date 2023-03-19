@@ -164,7 +164,10 @@ export default function Notes() {
 			})
 			alert('add success')
 			NotesData()
-			handleAdd()
+			setTitle('')
+			setCategory('')
+			setDescription('')
+			setCheckEditOrAdd(true)
 		} catch (error) {
 			console.log(error)
 		}
