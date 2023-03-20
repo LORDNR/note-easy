@@ -5,6 +5,6 @@ import { verifyToken } from '../middlewares/auth'
 
 const customerRouter = Router()
 
-customerRouter.get('/:id', verifyToken, customerController.profile)
+customerRouter.get('/profile', verifyToken, customerController.profile)
 
 export default customerRouter
