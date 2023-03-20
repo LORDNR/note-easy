@@ -100,7 +100,6 @@ export default function Notes() {
 
 	async function handleClickNote(noteData: any) {
 		if (isSmallScreen) {
-			// isSmallScreen = useMediaQuery('(max-width:300px)')
 			setShowEditForm(true)
 			setShowNoteForm(isSmallScreen)
 		}
@@ -113,6 +112,13 @@ export default function Notes() {
 		setCheckEditOrAdd(false)
 	}
 
+	async function setEmpty() {
+		setTitle('')
+		setCategory('')
+		setDescription('')
+		setCheckEditOrAdd(true)
+	}
+
 	async function handleEdit() {
 		const categoryId = await axios.get(`/category/name?name=${category}`)
 		try {
@@ -122,11 +128,8 @@ export default function Notes() {
 				categoryId: categoryId.data.data[0].id,
 			})
 			NotesData()
-			setTitle('')
-			setCategory('')
-			setDescription('')
-			setCheckEditOrAdd(true)
-			// handleAdd()
+			setEmpty()
+
 		} catch (error) {
 			console.log(error)
 		}
@@ -142,19 +145,13 @@ export default function Notes() {
 			setShowEditForm(true)
 			setShowNoteForm(isSmallScreen)
 		}
-		setTitle('')
-		setCategory('')
-		setDescription('')
-		setCheckEditOrAdd(true)
+		setEmpty()
 	}
 	async function handleCancel() {
 		if (isSmallScreen) {
 			window.location.href = '/notes'
 		} else {
-			setTitle('')
-			setCategory('')
-			setDescription('')
-			setCheckEditOrAdd(true)
+			setEmpty()
 		}
 	}
 
@@ -355,7 +352,7 @@ export default function Notes() {
 														marginLeft: 2,
 														fontSize: 36,
 													}}
-													// sx={{}}
+												// sx={{}}
 												/>
 
 												<br />
