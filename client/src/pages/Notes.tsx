@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -31,6 +31,8 @@ import {
 	SearchIconWrapper,
 	StyledInputBase,
 } from '../components/SearchProvider'
+import { Tags } from '../components/Tags'
+
 const ariaLabel = { 'aria-label': 'description' }
 
 interface Note {
@@ -66,12 +68,15 @@ export default function Notes() {
 	const [title, setTitle] = useState('')
 	const [description, setDescription] = useState('')
 	const [category, setCategory] = useState('')
+
 	const [showNoteForm, setShowNoteForm] = useState(true)
 	const [fetchCategory, setFetchCategory] = useState<Category[]>([])
 	const [checkEditOrAdd, setCheckEditOrAdd] = useState(true)
 	const [showEditForm, setShowEditForm] = useState(false)
 	const [openDialog, setOpenDialog] = useState(false)
 	const [searchTerm, setSearchTerm] = useState('')
+	const [tags, SetTags] = useState<string[]>([])
+	const tagRef = useRef<HTMLInputElement>(null)
 
 	let isSmallScreen = useMediaQuery('(max-width:900px)')
 
@@ -83,6 +88,11 @@ export default function Notes() {
 		throw 'Please login'
 	}
 
+	// let message: string[] = ['test', 'test2']
+	// setTags(message)
+
+	let testTag = ['test', 'test2']
+
 	const decoded: any = decodeToken(token)
 
 	customerId = decoded.id
@@ -92,6 +102,8 @@ export default function Notes() {
 		const nodeData = await axios.get(`/note/customer/${customerId}`)
 		setFetchData(nodeData.data.data)
 	}
+
+
 
 	async function CategoryData() {
 		const categoryData = await axios.get(`/category`)
@@ -104,10 +116,13 @@ export default function Notes() {
 			setShowNoteForm(isSmallScreen)
 		}
 
+
 		setNoteId(noteData.id)
 		setTitle(noteData.title)
 		setDescription(noteData.description)
+		SetTags(noteData.tags)
 		setCategory(noteData.categoryNote.name)
+
 
 		setCheckEditOrAdd(false)
 	}
@@ -116,6 +131,7 @@ export default function Notes() {
 		setTitle('')
 		setCategory('')
 		setDescription('')
+		SetTags([])
 		setCheckEditOrAdd(true)
 	}
 
@@ -125,11 +141,11 @@ export default function Notes() {
 			await axios.put(`/note/${noteId}`, {
 				title,
 				description,
+				tags,
 				categoryId: categoryId.data.data[0].id,
 			})
 			NotesData()
 			setEmpty()
-
 		} catch (error) {
 			console.log(error)
 		}
@@ -161,16 +177,13 @@ export default function Notes() {
 			await axios.post('/note', {
 				title,
 				description,
-				tags: ['test', 'testwtw'],
+				tags,
 				customerId,
 				categoryId: categoryId.data.data[0].id,
 			})
-			alert('add success')
+			// alert('add success')
 			NotesData()
-			setTitle('')
-			setCategory('')
-			setDescription('')
-			setCheckEditOrAdd(true)
+			setEmpty()
 		} catch (error) {
 			console.log(error)
 		}
@@ -202,6 +215,23 @@ export default function Notes() {
 			return description
 		}
 	}
+
+	//tags
+
+
+	const handleDelete = (value: string) => {
+		const newTags = tags.filter((val) => val !== value)
+		SetTags(newTags)
+	}
+	const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault()
+		if (tagRef.current && tagRef.current.value !== '') {
+			SetTags([...tags, tagRef.current.value])
+			tagRef.current.value = ''
+		}
+	}
+
+	// end tags
 
 	useEffect(() => {
 		NotesData()
@@ -260,19 +290,24 @@ export default function Notes() {
 											noteData.categoryNote.name?.includes(searchTerm) ||
 											noteData.description
 												.toLocaleLowerCase()
-												.includes(searchTerm)
+												.includes(searchTerm.toLocaleLowerCase()) ||
+											noteData.tags[0].toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()) ||
+											noteData.updatedAt.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
 										) {
 											return noteData
 										}
 									})
 									.map((noteData: Note) => (
 										<div key={noteData.id}>
-											<Item sx={{ display: 'flex' }}>
+											<Item
+												sx={{ display: 'flex', backgroundColor: 'lightyellow' }}
+											>
 												<CardActionArea component="a" href="#">
 													<div>
 														<CardContent
 															onClick={() => handleClickNote(noteData)}
 														>
+
 															<Typography
 																variant="h5"
 																component="div"
@@ -296,6 +331,12 @@ export default function Notes() {
 																	.toLocaleString()
 																	.replace(/:\d{2}\s/, ' ')}
 															</Typography>
+															<br />
+															{noteData.tags.map((tag: String) =>
+																<Typography sx={{ border: 1, borderRadius: '16px', padding: '3%', alignItems: 'center', marginLeft: 0.2, backgroundColor: 'lightsalmon', color: 'white' }} variant='caption'>
+																	{tag}
+																</Typography>
+															)}
 														</CardContent>
 													</div>
 												</CardActionArea>
@@ -319,17 +360,48 @@ export default function Notes() {
 									))}
 							</Grid>
 						</div>
-						{/* {
-						showEditForm && (
-							<div>mlasmbma;</div>
-						) && (
-							<div style={{}} hidden></div>
-						)
-					} */}
+
 
 						<div hidden={!showNoteForm}>
 							<Grid xs={12}>
 								<div>
+									<div>
+										{/*tags*/}
+
+										<Box sx={{ flexGrow: 1 }}>
+											<form onSubmit={handleOnSubmit}>
+												<TextField
+													inputRef={tagRef}
+													fullWidth
+													variant='standard'
+													size='small'
+													sx={{ margin: '1rem 0' }}
+													margin='none'
+													placeholder={tags.length < 5 ? 'Enter tags' : ''}
+													InputProps={{
+														startAdornment: (
+															<Box
+																sx={{ margin: '0 0.2rem 0 0', display: 'flex' }}
+
+															>
+																{tags.map((data, index) => {
+																	return (
+																		<Tags
+																			data={data}
+																			handleDelete={handleDelete}
+																			key={index}
+																		/>
+																	)
+																})}
+															</Box>
+														),
+													}}
+												/>
+											</form>
+										</Box>
+
+										{/* end tags */}
+									</div>
 									<Box
 										component="form"
 										onSubmit={handleEditOrAdd}
@@ -406,8 +478,9 @@ export default function Notes() {
 													type='submit'
 													variant="contained"
 													color="success"
+													sx={{ width: '15%' }}
 												>
-													Submit
+													Save
 												</Button>
 												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 												<Button
