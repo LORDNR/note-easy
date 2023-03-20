@@ -12,6 +12,7 @@ import Login from './pages/Login'
 import UpdateStatus from './pages/UpdateStatus'
 import Register from './pages/Register'
 import Notes from './pages/Notes'
+import './index.css'
 
 axios.defaults.baseURL = `${import.meta.env.VITE_BASE_API}`
 // axios.defaults.withCredentials = true
