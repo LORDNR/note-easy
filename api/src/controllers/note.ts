@@ -107,6 +107,7 @@ async function findById(req: Request, res: Response) {
 				id: true,
 				title: true,
 				description: true,
+				tags: true,
 				customer: {
 					select: {
 						email: true,
@@ -144,6 +145,7 @@ async function findByCustomer(req: Request, res: Response) {
 				id: true,
 				title: true,
 				description: true,
+				tags: true,
 				categoryNote: {
 					select: {
 						name: true,
@@ -170,7 +172,7 @@ async function update(req: Request, res: Response) {
 		reqValidation(req)
 
 		const { id } = req.params
-		const { title, description, categoryId } = req.body
+		const { title, description, tags, categoryId } = req.body
 
 		await prisma.note.update({
 			where: {
@@ -179,6 +181,7 @@ async function update(req: Request, res: Response) {
 			data: {
 				title,
 				description,
+				tags,
 				categoryNote: {
 					connect: {
 						id: categoryId,

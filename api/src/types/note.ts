@@ -1,10 +1,21 @@
 import { Schema } from 'express-validator'
 
 const AddNoteRequest: Schema = {
+	title: {
+		isString: true,
+		in: 'body',
+		errorMessage: 'description must be string',
+	},
 	description: {
 		isString: true,
 		in: 'body',
 		errorMessage: 'description must be string',
+	},
+	tags: {
+		isArray: true,
+		in: 'body',
+		errorMessage: 'tags must be an array',
+		optional: true,
 	},
 	customerId: {
 		isUUID: true,
@@ -48,6 +59,12 @@ const UpdateNoteRequest: Schema = {
 		isString: true,
 		in: 'body',
 		errorMessage: 'description must be string',
+	},
+	tags: {
+		isArray: true,
+		in: 'body',
+		errorMessage: 'tags must be an array',
+		optional: true,
 	},
 	categoryId: {
 		isUUID: true,
