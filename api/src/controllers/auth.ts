@@ -16,7 +16,7 @@ async function register(req: Request, res: Response) {
 
 		const customer: Customer | null = await prisma.customer.create({
 			data: {
-				email,
+				email: email.toLowerCase(),
 				password: bcryptjs.hashSync(password, await bcryptjs.genSalt(10)),
 				firstname,
 				lastname,
@@ -54,7 +54,7 @@ async function login(req: Request, res: Response) {
 
 		const customer: Customer | null = await prisma.customer.findUnique({
 			where: {
-				email,
+				email: email.toLowerCase(),
 			},
 		})
 
