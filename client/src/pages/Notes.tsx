@@ -21,8 +21,16 @@ import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import TextField from '@mui/material/TextField'
+import SearchIcon from '@mui/icons-material/Search'
 
 import AddIcon from '@mui/icons-material/Add'
+import AppBarProvider from '../components/AppBarProvider'
+import DialogProvider from '../components/DialogProvider'
+import {
+	Search,
+	SearchIconWrapper,
+	StyledInputBase,
+} from '../components/SearchProvider'
 const ariaLabel = { 'aria-label': 'description' }
 
 interface Note {
@@ -62,6 +70,8 @@ export default function Notes() {
 	const [fetchCategory, setFetchCategory] = useState<Category[]>([])
 	const [checkEditOrAdd, setCheckEditOrAdd] = useState(true)
 	const [showEditForm, setShowEditForm] = useState(false)
+	const [openDialog, setOpenDialog] = useState(false)
+	const [searchTerm, setSearchTerm] = useState('')
 
 	let isSmallScreen = useMediaQuery('(max-width:900px)')
 
@@ -123,12 +133,8 @@ export default function Notes() {
 	}
 
 	async function handleRemove(nodeId: any) {
-		try {
-			await axios.delete(`/note/${nodeId}`)
-			NotesData()
-		} catch (error) {
-			console.log(error)
-		}
+		setNoteId(nodeId)
+		setOpenDialog(true)
 	}
 
 	async function handleAdd() {
@@ -173,7 +179,9 @@ export default function Notes() {
 		}
 	}
 
-	function handleEditOrAdd() {
+	function handleEditOrAdd(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault()
+
 		setShowEditForm(false)
 		setShowNoteForm(!isSmallScreen)
 		if (checkEditOrAdd) {
@@ -205,70 +213,116 @@ export default function Notes() {
 	}, [isSmallScreen])
 
 	return (
-		<div style={{ margin: '2%' }}>
-			<Box sx={{ flexGrow: 1 }}>
-				<Grid container spacing={4}>
-					<Grid xs={12} sx={{ textAlign: 'left' }}>
-						<div hidden={showEditForm}>
-							<Button onClick={handleAdd} variant="contained" color="success">
-								<AddIcon />
-								Create
-							</Button>
-						</div>
-					</Grid>
-					<br />
-					<div id='note-data' hidden={showEditForm}>
-						<Grid>
-							{fetchData.map((noteData: Note) => (
-								<div key={noteData.id}>
-									<Item sx={{ display: 'flex' }}>
-										<CardActionArea component="a" href="#">
-											<div>
-												<CardContent onClick={() => handleClickNote(noteData)}>
-													<Typography
-														variant="h5"
-														component="div"
-														sx={{ color: 'black' }}
-													>
-														{truncateTitle(noteData.title)}
-													</Typography>
-													<Typography variant="caption" color="text.secondary">
-														{noteData.categoryNote.name}
-													</Typography>
-													<Typography variant="body1" component="div">
-														{truncateDescription(noteData.description)}
-													</Typography>
+		<div>
+			<AppBarProvider customer={customerEmail} />
+			<DialogProvider
+				open={openDialog}
+				dialogTitle='Confirm Remove Note'
+				noteId={noteId}
+			/>
+			<div style={{ margin: '2%' }}>
+				<Box sx={{ flexGrow: 1 }}>
+					<Grid container spacing={4}>
+						<Grid xs={12} sx={{ textAlign: 'left' }}>
+							<div hidden={showEditForm} style={{ display: 'flex' }}>
+								<Button
+									style={{ marginRight: 30 }}
+									onClick={handleAdd}
+									variant="contained"
+									color="success"
+								>
+									<AddIcon />
+									Create
+								</Button>
 
-													<Typography variant="body2">
-														Note เมื่อ{' '}
-														{new Date(noteData.updatedAt)
-															.toLocaleString()
-															.replace(/:\d{2}\s/, ' ')}
-													</Typography>
-												</CardContent>
-											</div>
-										</CardActionArea>
-										<div>
-											<Tooltip
-												title="Delete"
-												style={{ alignItems: 'self-end' }}
-											>
-												<IconButton>
-													<DeleteIcon
-														sx={{ color: 'red' }}
-														onClick={() => handleRemove(noteData.id)}
-													/>
-												</IconButton>
-											</Tooltip>
-										</div>
-									</Item>
-
-									<br />
+								<div>
+									<Search>
+										<SearchIconWrapper>
+											<SearchIcon />
+										</SearchIconWrapper>
+										<StyledInputBase
+											placeholder="Search…"
+											inputProps={{ 'aria-label': 'search' }}
+											onChange={(e) => setSearchTerm(e.target.value)}
+										/>
+									</Search>
 								</div>
-							))}
+							</div>
 						</Grid>
-					</div>
-					{/* {
+						<br />
+						<div id='note-data' hidden={showEditForm}>
+							<Grid>
+								{fetchData
+									.filter((noteData: Note) => {
+										if (searchTerm == '') {
+											return noteData
+										} else if (
+											noteData.title
+												.toLowerCase()
+												.includes(searchTerm.toLowerCase()) ||
+											noteData.categoryNote.name?.includes(searchTerm) ||
+											noteData.description
+												.toLocaleLowerCase()
+												.includes(searchTerm)
+										) {
+											return noteData
+										}
+									})
+									.map((noteData: Note) => (
+										<div key={noteData.id}>
+											<Item sx={{ display: 'flex' }}>
+												<CardActionArea component="a" href="#">
+													<div>
+														<CardContent
+															onClick={() => handleClickNote(noteData)}
+														>
+															<Typography
+																variant="h5"
+																component="div"
+																sx={{ color: 'black' }}
+															>
+																{truncateTitle(noteData.title)}
+															</Typography>
+															<Typography
+																variant="caption"
+																color="text.secondary"
+															>
+																{noteData.categoryNote.name}
+															</Typography>
+															<Typography variant="body1" component="div">
+																{truncateDescription(noteData.description)}
+															</Typography>
+
+															<Typography variant="body2">
+																Note เมื่อ{' '}
+																{new Date(noteData.updatedAt)
+																	.toLocaleString()
+																	.replace(/:\d{2}\s/, ' ')}
+															</Typography>
+														</CardContent>
+													</div>
+												</CardActionArea>
+												<div>
+													<Tooltip
+														title="Delete"
+														style={{ alignItems: 'self-end' }}
+													>
+														<IconButton>
+															<DeleteIcon
+																sx={{ color: 'red' }}
+																onClick={() => handleRemove(noteData.id)}
+															/>
+														</IconButton>
+													</Tooltip>
+												</div>
+											</Item>
+
+											<br />
+										</div>
+									))}
+							</Grid>
+						</div>
+						{/* {
 						showEditForm && (
 							<div>mlasmbma;</div>
 						) && (
@@ -276,84 +330,105 @@ export default function Notes() {
 						)
 					} */}
 
-					<div hidden={!showNoteForm}>
-						<Grid xs={12}>
-							<div>
-								<Card sx={{ minWidth: 275, width: '100vh', height: '100vh' }}>
-									<CardContent>
-										<Input
-											placeholder="Title"
-											value={title}
-											onChange={(e) => setTitle(e.target.value)}
-											inputProps={ariaLabel}
-											sx={{
-												width: '100vh',
-												height: '100%',
-												marginBottom: 5,
-												marginLeft: 2,
-												fontSize: 36,
-											}}
-										// sx={{}}
-										/>
+						<div hidden={!showNoteForm}>
+							<Grid xs={12}>
+								<div>
+									<Box
+										component="form"
+										onSubmit={handleEditOrAdd}
+										sx={{ mt: 1 }}
+									>
+										<Card
+											sx={{ minWidth: 275, width: '100vh', height: '100vh' }}
+										>
+											<CardContent>
+												<Input
+													required
+													placeholder="Title"
+													value={title}
+													onChange={(e) => setTitle(e.target.value)}
+													inputProps={ariaLabel}
+													sx={{
+														width: '80%',
+														height: '100%',
+														marginBottom: 5,
+														marginLeft: 2,
+														fontSize: 36,
+													}}
+													// sx={{}}
+												/>
 
-										<br />
+												<br />
 
-										<div>
-											<FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-												<InputLabel id="demo-select-small">Category</InputLabel>
-												<Select
-													labelId="demo-simple-select-label"
-													id="demo-simple-select"
-													label="Category"
-													value={category}
-													onChange={(e) => setCategory(e.target.value)}
+												<div>
+													<FormControl
+														sx={{ m: 1, minWidth: 120 }}
+														required
+														size="small"
+													>
+														<InputLabel id="demo-select-small">
+															Category
+														</InputLabel>
+														<Select
+															labelId="demo-simple-select-label"
+															id="demo-simple-select"
+															label="Category"
+															value={category}
+															onChange={(e) => setCategory(e.target.value)}
+														>
+															{fetchCategory.map((category: Category) => (
+																<MenuItem
+																	key={category.id}
+																	value={category.name}
+																>
+																	{category.name}
+																</MenuItem>
+															))}
+														</Select>
+													</FormControl>
+												</div>
+												<br />
+												<br />
+
+												<TextField
+													id="outlined-textarea"
+													label="Description"
+													required
+													// placeholder="Description"
+													rows={16}
+													multiline
+													value={description}
+													onChange={(e) => setDescription(e.target.value)}
+													sx={{ width: '100%', height: '100%' }}
+												/>
+											</CardContent>
+											<br />
+											<div style={{ textAlign: 'center' }}>
+												<Button
+													// onClick={handleEditOrAdd}
+													type='submit'
+													variant="contained"
+													color="success"
 												>
-													{fetchCategory.map((category: Category) => (
-														<MenuItem key={category.id} value={category.name}>
-															{category.name}
-														</MenuItem>
-													))}
-												</Select>
-											</FormControl>
-										</div>
-										<br />
-										<br />
-
-										<TextField
-											id="outlined-textarea"
-											label="Description"
-											// placeholder="Description"
-											rows={16}
-											multiline
-											value={description}
-											onChange={(e) => setDescription(e.target.value)}
-											sx={{ width: '100%', height: '100%' }}
-										/>
-									</CardContent>
-									<br />
-									<div style={{ textAlign: 'center' }}>
-										<Button
-											onClick={handleEditOrAdd}
-											variant="contained"
-											color="success"
-										>
-											Submit
-										</Button>
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-										<Button
-											onClick={handleCancel}
-											variant="contained"
-											color="error"
-										>
-											Cancel
-										</Button>
-									</div>
-								</Card>
-							</div>
-						</Grid>
-					</div>
-				</Grid>
-			</Box>
+													Submit
+												</Button>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												<Button
+													onClick={handleCancel}
+													variant="contained"
+													color="error"
+												>
+													Cancel
+												</Button>
+											</div>
+										</Card>
+									</Box>
+								</div>
+							</Grid>
+						</div>
+					</Grid>
+				</Box>
+			</div>
 		</div>
 	)
 }
