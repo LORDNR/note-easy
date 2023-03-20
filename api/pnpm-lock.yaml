@@ -17,6 +17,7 @@ specifiers:
   mailgen: ^2.0.27
   nodemailer: ^6.9.1
   prisma: ^4.11.0
+  profanity-check: ^0.0.3
   rome: ^11.0.0
   tsx: ^3.12.5
   typescript: ^5.0.2
@@ -31,6 +32,7 @@ dependencies:
   jsonwebtoken: 9.0.0
   mailgen: 2.0.27
   nodemailer: 6.9.1
+  profanity-check: 0.0.3
 
 devDependencies:
   '@types/bcryptjs': 2.4.2
@@ -1102,6 +1104,11 @@ packages:
     requiresBuild: true
     dependencies:
       '@prisma/engines': 4.11.0
+
+  /profanity-check/0.0.3:
+    resolution: {integrity: sha512-WeghF2hl1eO/Y6hnfiL8NAsdLbeh2ZrWccb5N+JuUjRzBC3CAIAkCBdJXwOg9ICOCdwzhq61aGnev7eUhJcnzg==}
+    engines: {node: '>=10'}
+    dev: false
 
   /proxy-addr/2.0.7:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}

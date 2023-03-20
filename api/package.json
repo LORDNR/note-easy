@@ -21,7 +21,8 @@
     "express-validator": "^6.15.0",
     "jsonwebtoken": "^9.0.0",
     "mailgen": "^2.0.27",
-    "nodemailer": "^6.9.1"
+    "nodemailer": "^6.9.1",
+    "profanity-check": "^0.0.3"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
