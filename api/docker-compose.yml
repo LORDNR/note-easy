@@ -1,16 +1,38 @@
-version: '3.9'
+version: '3.8'
+
 services:
+  api:
+    build:
+      context: .
+      target: dev
+    container_name: note-easy
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    env_file:
+      - ./.env
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    networks:
+      - web  
+    command: pnpm dev
+
   db:
-    image: postgres:15.2-alpine
-    restart: always
+    image: postgres:15-alpine
+    container_name: note-easy-db
+    ports:
+      - 5432:5432
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=1234
       - POSTGRES_DB=note-easy
-    ports:
-      - '5432:5432'
-    volumes: 
-      - db:/var/lib/postgresql/data
-volumes:
-  db:
-    driver: local
+    volumes:
+      - .db_data:/var/lib/postgresql/data
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
