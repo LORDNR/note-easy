@@ -10,16 +10,7 @@
   #### Add data by .env.example
   
   ### Run command Create Database
-  >  docker-compose up --build db
-
-  ### Run command pnpm
-  >  pnpm install
-  
-  >  pnpm prisma db push
-
-  >  pnpm prisma generate
-
-  >  pnpm dev
+  >  docker-compose up --build 
 
 #
 #
