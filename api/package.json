@@ -5,10 +5,18 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rimraf ./build && tsc",
     "start": "tsc && node dist/index.js",
     "dev": "tsx watch ./src/index.ts",
-    "rome": "rome format ./src --write"
+    "rome": "rome format ./src --write",
+    "ts.check": "tsc --project tsconfig.json",
+    "add-build": "git add dist"
   },
+  "pre-commit": [
+    "ts.check",
+    "build",
+    "add-build"
+],
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -30,7 +38,10 @@
     "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "^18.15.3",
     "@types/nodemailer": "^6.4.7",
+    "add": "^2.0.6",
+    "pre-commit": "^1.2.2",
     "prisma": "^4.11.0",
+    "rimraf": "^4.4.0",
     "rome": "^11.0.0",
     "tsx": "^3.12.5",
     "typescript": "^5.0.2"
