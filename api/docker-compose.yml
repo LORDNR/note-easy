@@ -15,8 +15,8 @@ services:
     volumes:
       - ./:/app
       - /app/node_modules
-    networks:
-      - web  
+    # networks:
+    #   - web  
     command: pnpm dev
 
   # db:
@@ -33,6 +33,6 @@ services:
   #   networks:
   #     - web
 
-networks:
-  web:
-    external: true
+# networks:
+#   web:
+#     external: true
