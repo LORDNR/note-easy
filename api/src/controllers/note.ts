@@ -1,11 +1,11 @@
 import type { Request, Response } from 'express'
-import { Filter } from 'profanity-check'
+import { Filter } from '../utils/profanity-check'
 
 import { prisma, reqValidation } from '../utils'
 import { SuccessResponse, ErrorResponse } from '../types/response'
 
 const multiLanguageFilter = new Filter({
-	languages: ['thai', 'english', 'french'],
+	languages: ['thai', 'english'],
 })
 
 async function create(req: Request, res: Response) {
@@ -14,9 +14,9 @@ async function create(req: Request, res: Response) {
 
 		let { title, description, customerId, categoryId, tags } = req.body
 
-		console.log(multiLanguageFilter.isProfane(title))
+		// console.log(multiLanguageFilter.isProfane(title))
 
-		console.log(multiLanguageFilter.isProfane(description))
+		// console.log(multiLanguageFilter.isProfane(description))
 
 		const noteData = await prisma.note.create({
 			data: {
