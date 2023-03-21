@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const utils_1 = require("../utils");
-const sendVerifyEmail_1 = __importDefault(require("../utils/sendVerifyEmail"));
 const config_1 = __importDefault(require("../config"));
 async function register(req, res) {
     try {
@@ -20,7 +19,7 @@ async function register(req, res) {
                 lastname,
             },
         });
-        await (0, sendVerifyEmail_1.default)(email, customer.id, 'To get started with Verify Email, please click here:', '24h');
+        await (0, utils_1.sendVerifyEmail)(email, customer.id, 'To get started with Verify Email, please click here:', '24h');
         return res.status(201).json({
             status: 'success',
             message: 'Register Success. Please Verify Email',
@@ -53,7 +52,7 @@ async function login(req, res) {
             throw 'Invalid email or password';
         }
         if (customer.status === 'Unverified') {
-            await (0, sendVerifyEmail_1.default)(email, customer.id, 'To get started with Verify Email, please click here:', '24h');
+            await (0, utils_1.sendVerifyEmail)(email, customer.id, 'To get started with Verify Email, please click here:', '24h');
             return res.status(200).json({
                 status: 'success',
                 message: 'Please Verify your email',
