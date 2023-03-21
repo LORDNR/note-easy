@@ -32,6 +32,7 @@ import {
 	StyledInputBase,
 } from '../components/SearchProvider'
 import { Tags } from '../components/Tags'
+import BackdropProvider from '../components/BackdropProvider'
 
 const ariaLabel = { 'aria-label': 'description' }
 
@@ -69,6 +70,7 @@ export default function Notes() {
 	const [description, setDescription] = useState('')
 	const [category, setCategory] = useState('')
 
+	const [openBackdrop, setOpenBackdrop] = useState(false)
 	const [showNoteForm, setShowNoteForm] = useState(true)
 	const [fetchCategory, setFetchCategory] = useState<Category[]>([])
 	const [checkEditOrAdd, setCheckEditOrAdd] = useState(true)
@@ -127,6 +129,7 @@ export default function Notes() {
 	}
 
 	async function handleEdit() {
+		setOpenBackdrop(!openBackdrop)
 		const categoryId = await axios.get(`/category/name?name=${category}`)
 		try {
 			await axios.put(`/note/${noteId}`, {
@@ -137,6 +140,7 @@ export default function Notes() {
 			})
 			NotesData()
 			setEmpty()
+			setOpenBackdrop(false)
 		} catch (error) {
 			console.log(error)
 		}
@@ -168,6 +172,7 @@ export default function Notes() {
 
 	async function handleAddNote() {
 		try {
+			setOpenBackdrop(!openBackdrop)
 			const categoryId = await axios.get(`/category/name?name=${category}`)
 			await axios.post('/note', {
 				title,
@@ -178,6 +183,7 @@ export default function Notes() {
 			})
 			NotesData()
 			setEmpty()
+			setOpenBackdrop(false)
 		} catch (error) {
 			console.log(error)
 		}
@@ -232,6 +238,7 @@ export default function Notes() {
 
 	return (
 		<div>
+			<BackdropProvider open={openBackdrop}></BackdropProvider>
 			<AppBarProvider customer={customerEmail} />
 			<DialogProvider
 				open={openDialog}
@@ -430,7 +437,7 @@ export default function Notes() {
 														marginLeft: 2,
 														fontSize: 36,
 													}}
-												// sx={{}}
+													// sx={{}}
 												/>
 
 												<br />
