@@ -2,9 +2,8 @@ import type { Request, Response } from 'express'
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
-import { prisma, reqValidation } from '../utils'
+import { prisma, reqValidation, sendVerifyEmail } from '../utils'
 import { SuccessResponse, ErrorResponse } from '../types/response'
-import sendVerifyEmail from '../utils/sendVerifyEmail'
 import config from '../config'
 import { Customer } from '@prisma/client'
 
