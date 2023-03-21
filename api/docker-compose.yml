@@ -6,8 +6,8 @@ services:
       context: .
       target: dev
     container_name: note-easy
-    depends_on:
-      - db
+    # depends_on:
+    #   - db
     ports:
       - 3000:3000
     env_file:
@@ -19,19 +19,19 @@ services:
       - web  
     command: pnpm dev
 
-  db:
-    image: postgres:15-alpine
-    container_name: note-easy-db
-    ports:
-      - 5432:5432
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=1234
-      - POSTGRES_DB=note-easy
-    volumes:
-      - .db_data:/var/lib/postgresql/data
-    networks:
-      - web
+  # db:
+  #   image: postgres:15-alpine
+  #   container_name: note-easy-db
+  #   ports:
+  #     - 5432:5432
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=1234
+  #     - POSTGRES_DB=note-easy
+  #   volumes:
+  #     - .db_data:/var/lib/postgresql/data
+  #   networks:
+  #     - web
 
 networks:
   web:
