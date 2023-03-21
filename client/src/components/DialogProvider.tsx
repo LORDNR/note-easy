@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useState } from 'react'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
@@ -8,6 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
 import axios from 'axios'
+import BackdropProvider from './BackdropProvider'
 
 export default function DialogProvider(props: {
 	open: boolean
@@ -17,15 +18,19 @@ export default function DialogProvider(props: {
 	onClose: () => void
 	setEmpty(): Promise<void>
 }) {
+	const [openBackdrop, setOpenBackdrop] = useState(false)
+
 	const theme = useTheme()
 	const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
 	async function handleSubmit() {
+		setOpenBackdrop(!openBackdrop)
 		try {
 			await axios.delete(`/note/${props.noteId}`)
 			props.NotesData()
 			props.onClose()
 			props.setEmpty()
+			setOpenBackdrop(false)
 		} catch (error) {
 			console.log(error)
 		}
@@ -57,6 +62,7 @@ export default function DialogProvider(props: {
 					</Button>
 				</DialogActions>
 			</Dialog>
+			<BackdropProvider open={openBackdrop}></BackdropProvider>
 		</div>
 	)
 }
