@@ -113,7 +113,6 @@ async function callUpdateStatus(req: Request, res: Response) {
 
 		const secret = config.environments.SECRET
 
-		// let decoded: any = jwt.verify(token.substring(1), secret)
 		let decoded: any = jwt.verify(token, secret)
 		const customerId = decoded.customerId
 		if (await updateStatus(customerId)) {

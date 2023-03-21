@@ -176,7 +176,6 @@ export default function Notes() {
 				customerId,
 				categoryId: categoryId.data.data[0].id,
 			})
-			// alert('add success')
 			NotesData()
 			setEmpty()
 		} catch (error) {
@@ -210,8 +209,6 @@ export default function Notes() {
 			return description
 		}
 	}
-
-	//tags
 
 	const handleDelete = (value: string) => {
 		const newTags = tags.filter((val) => val !== value)
@@ -433,7 +430,7 @@ export default function Notes() {
 														marginLeft: 2,
 														fontSize: 36,
 													}}
-													// sx={{}}
+												// sx={{}}
 												/>
 
 												<br />

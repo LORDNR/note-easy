@@ -19,7 +19,6 @@ async function sendVerifyEmail(
 
 	const text = 'Verify Email'
 	const subject = 'Verify your Email'
-	// const link = `${config.environments.URL_WEB}${linkPart}?token=${token}`;
 	const link = `${config.environments.URL_WEB}?token=${token}`
 
 	try {
