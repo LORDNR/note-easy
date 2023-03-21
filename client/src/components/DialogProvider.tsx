@@ -13,6 +13,9 @@ export default function DialogProvider(props: {
 	open: boolean
 	dialogTitle: string
 	noteId: string
+	NotesData(): Promise<void>
+	onClose: () => void
+	setEmpty(): Promise<void>
 }) {
 	const theme = useTheme()
 	const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
@@ -20,14 +23,16 @@ export default function DialogProvider(props: {
 	async function handleSubmit() {
 		try {
 			await axios.delete(`/note/${props.noteId}`)
-			window.location.href = '/notes'
+			props.NotesData()
+			props.onClose()
+			props.setEmpty()
 		} catch (error) {
 			console.log(error)
 		}
 	}
 
 	async function handleCancel() {
-		window.location.href = '/notes'
+		props.onClose()
 	}
 
 	return (

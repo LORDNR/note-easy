@@ -88,11 +88,6 @@ export default function Notes() {
 		throw 'Please login'
 	}
 
-	// let message: string[] = ['test', 'test2']
-	// setTags(message)
-
-	let testTag = ['test', 'test2']
-
 	const decoded: any = decodeToken(token)
 
 	customerId = decoded.id
@@ -102,8 +97,6 @@ export default function Notes() {
 		const nodeData = await axios.get(`/note/customer/${customerId}`)
 		setFetchData(nodeData.data.data)
 	}
-
-
 
 	async function CategoryData() {
 		const categoryData = await axios.get(`/category`)
@@ -116,13 +109,11 @@ export default function Notes() {
 			setShowNoteForm(isSmallScreen)
 		}
 
-
 		setNoteId(noteData.id)
 		setTitle(noteData.title)
 		setDescription(noteData.description)
 		SetTags(noteData.tags)
 		setCategory(noteData.categoryNote.name)
-
 
 		setCheckEditOrAdd(false)
 	}
@@ -149,6 +140,10 @@ export default function Notes() {
 		} catch (error) {
 			console.log(error)
 		}
+	}
+
+	function handleClose() {
+		setOpenDialog(false)
 	}
 
 	async function handleRemove(nodeId: any) {
@@ -218,7 +213,6 @@ export default function Notes() {
 
 	//tags
 
-
 	const handleDelete = (value: string) => {
 		const newTags = tags.filter((val) => val !== value)
 		SetTags(newTags)
@@ -246,6 +240,9 @@ export default function Notes() {
 				open={openDialog}
 				dialogTitle='Confirm Remove Note'
 				noteId={noteId}
+				NotesData={NotesData}
+				onClose={handleClose}
+				setEmpty={setEmpty}
 			/>
 			<div style={{ margin: '2%' }}>
 				<Box sx={{ flexGrow: 1 }}>
@@ -288,11 +285,15 @@ export default function Notes() {
 												.toLowerCase()
 												.includes(searchTerm.toLowerCase()) ||
 											noteData.categoryNote.name?.includes(searchTerm) ||
-											noteData.description
+											// noteData.description
+											// 	.toLocaleLowerCase()
+											// 	.includes(searchTerm.toLocaleLowerCase()) ||
+											noteData.tags[0]
 												.toLocaleLowerCase()
 												.includes(searchTerm.toLocaleLowerCase()) ||
-											noteData.tags[0].toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()) ||
-											noteData.updatedAt.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
+											noteData.updatedAt
+												.toLocaleLowerCase()
+												.includes(searchTerm.toLocaleLowerCase())
 										) {
 											return noteData
 										}
@@ -307,7 +308,6 @@ export default function Notes() {
 														<CardContent
 															onClick={() => handleClickNote(noteData)}
 														>
-
 															<Typography
 																variant="h5"
 																component="div"
@@ -332,11 +332,22 @@ export default function Notes() {
 																	.replace(/:\d{2}\s/, ' ')}
 															</Typography>
 															<br />
-															{noteData.tags.map((tag: String) =>
-																<Typography sx={{ border: 1, borderRadius: '16px', padding: '3%', alignItems: 'center', marginLeft: 0.2, backgroundColor: 'lightsalmon', color: 'white' }} variant='caption'>
+															{noteData.tags.map((tag: String) => (
+																<Typography
+																	sx={{
+																		border: 1,
+																		borderRadius: '16px',
+																		padding: '3%',
+																		alignItems: 'center',
+																		marginLeft: 0.2,
+																		backgroundColor: 'lightsalmon',
+																		color: 'white',
+																	}}
+																	variant='caption'
+																>
 																	{tag}
 																</Typography>
-															)}
+															))}
 														</CardContent>
 													</div>
 												</CardActionArea>
@@ -361,7 +372,6 @@ export default function Notes() {
 							</Grid>
 						</div>
 
-
 						<div hidden={!showNoteForm}>
 							<Grid xs={12}>
 								<div>
@@ -382,7 +392,6 @@ export default function Notes() {
 														startAdornment: (
 															<Box
 																sx={{ margin: '0 0.2rem 0 0', display: 'flex' }}
-
 															>
 																{tags.map((data, index) => {
 																	return (
@@ -424,7 +433,7 @@ export default function Notes() {
 														marginLeft: 2,
 														fontSize: 36,
 													}}
-												// sx={{}}
+													// sx={{}}
 												/>
 
 												<br />
