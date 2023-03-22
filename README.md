@@ -9,7 +9,7 @@
   ### Create file .env
   #### Add data by .env.example
   
-  ### Run command Create Database
+  ### Run command Docker
   >  docker-compose up --build 
 
 #
