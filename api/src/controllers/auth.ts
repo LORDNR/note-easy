@@ -19,19 +19,20 @@ async function register(req: Request, res: Response) {
 				password: bcryptjs.hashSync(password, await bcryptjs.genSalt(10)),
 				firstname,
 				lastname,
+				status: 'Verified'
 			},
 		})
 
-		await sendVerifyEmail(
-			email,
-			customer.id,
-			'To get started with Verify Email, please click here:',
-			'24h',
-		)
+		// await sendVerifyEmail(
+		// 	email,
+		// 	customer.id,
+		// 	'To get started with Verify Email, please click here:',
+		// 	'24h',
+		// )
 
 		return res.status(201).json({
 			status: 'success',
-			message: 'Register Success. Please Verify Email',
+			message: 'Register Success.',
 			data: { customer_id: customer.id },
 		} as SuccessResponse)
 	} catch (error: any) {
@@ -71,17 +72,31 @@ async function login(req: Request, res: Response) {
 		}
 
 		if (customer.status === 'Unverified') {
-			await sendVerifyEmail(
-				email,
-				customer.id,
-				'To get started with Verify Email, please click here:',
-				'24h',
+			await prisma.customer.update(
+				{
+					where: {
+						email: email
+					},
+					data: {
+						status: 'Verified'
+					}
+				
+				}
 			)
-			return res.status(200).json({
-				status: 'success',
-				message: 'Please Verify your email',
-			} as SuccessResponse)
 		}
+
+		// if (customer.status === 'Unverified') {
+		// 	await sendVerifyEmail(
+		// 		email,
+		// 		customer.id,
+		// 		'To get started with Verify Email, please click here:',
+		// 		'24h',
+		// 	)
+		// 	return res.status(200).json({
+		// 		status: 'success',
+		// 		message: 'Please Verify your email',
+		// 	} as SuccessResponse)
+		// }
 		const token = jwt.sign(
 			{
 				id: customer.id,
